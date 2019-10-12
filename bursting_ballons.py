@@ -27,7 +27,10 @@ def display_friend(x,y):
 	windowSurface.blit(Friend,(x-1,y-5))
 def display_monster(x,y):
 	windowSurface.blit(Monster,(x+2,y))
- 
+def crash():
+	pygame.mixer.Sound.play(crash_sound)
+	pygame.mixer.music.stop()
+
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
@@ -37,7 +40,7 @@ y = [RED,GREEN]
 # set up pygame
 pygame.init()
 mainClock = pygame.time.Clock()
-#bulletSound = pygame.mixer.music.load('bullet.mp3')
+#crash_sound = pygame.mixer.Sound("crash.wav")
 music = pygame.mixer.music.load('music.mp3')
 pygame.mixer.music.play(-1)
 
@@ -67,14 +70,14 @@ MOVE_X = MOVE_Y = 0
 ball = {'centre_x' : (int)(WINDOWWIDTH/2) , 'centre_y' : WINDOWHEIGHT-RAD_BALL, 'color' : WHITE }
 items = []
 for i in range(NUMBER):
-	b = {'centre_x' : random.randrange(RAD,WINDOWWIDTH-RAD), 'centre_y' : random.randrange(RAD,WINDOWWIDTH/2*3), 'color' : random.choice(y),'num':i}
+	b = {'centre_x' : random.randrange(RAD,WINDOWWIDTH-RAD), 'centre_y' : random.randrange(RAD,WINDOWWIDTH/2), 'color' : random.choice(y),'num':i}
 	items.append(b)
 	
 while SPEED_BALL:
 	pygame.draw.circle(windowSurface,ball['color'], (ball['centre_x'],ball['centre_y']), RAD_BALL,0)
 	display_hero(ball['centre_x']-RAD_BALL,ball['centre_y']-RAD)
-	if KILL >= 5+ PREV_KILL:
-		SPEED += 5
+	if KILL >= 3+ PREV_KILL:
+		SPEED += 1
 		PREV_KILL = KILL
 	for b1 in items:
 		for b2 in items:
@@ -83,6 +86,7 @@ while SPEED_BALL:
 
 	for b in items:
 		if b['color'] != WHITE and square(ball['centre_x'] - b['centre_x']) + square(ball['centre_y']- b['centre_y']) <= square(RAD_BALL + RAD):
+			#crash()
 			if b['color'] == GREEN:
 				SPEED_BALL += 1
 				KILL += 1
@@ -103,7 +107,6 @@ while SPEED_BALL:
 			b['centre_y'] = -RAD
 			b['centre_x'] = random.randrange(RAD,WINDOWWIDTH-RAD)
 			b['color'] = random.choice(y)
-	abra()
 	things_dodged(SCORE)
 	pygame.display.update()
 	time.sleep(0.02)
